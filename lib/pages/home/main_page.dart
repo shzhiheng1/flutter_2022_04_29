@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
           ),
   ];
   int _currentIndex=0;
-  List pageList=[HomePage(), const FindPage(),const MinePage()];
+  List pageList=[const HomePage(), const FindPage(),const MinePage()];
   void _handleCurrent(index) {
     debugPrint('当前选中的下标:$index');
     setState(() {

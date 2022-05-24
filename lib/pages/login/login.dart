@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({ Key ? key, required this.title }) : super(key: key);
@@ -61,17 +63,37 @@ class _LoginPageState extends State<LoginPage>{
 
 
 // 登录方法
-Future <void> submitLogin(){
+Future <void> submitLogin() async {
+
       debugPrint(_controllerName.text);
       debugPrint(_controllerPwd.text);
-     return Fluttertoast.showToast(
-          msg: '恭喜您，登录成功了！',
-          fontSize: 18.0,
-          timeInSecForIosWeb: 5,
-          // toastLength:Toast.LENGTH_SHORT,
-          backgroundColor: Colors.green,
-          // webPosition:'center'
-      );
+      // 获取输入值
+      final name=_controllerName.text;
+      final pwd=_controllerPwd.text;
+      if('shizhiheng'==name&&'123456'==pwd){
+        // 本地存储登录信息
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', 'true');
+          final token = prefs.getString('token');
+          Future.delayed(const Duration( seconds: 2),(){
+              debugPrint(token.toString());
+              Navigator.pushReplacementNamed(context, '/main');
+          });
+           Fluttertoast.showToast(
+                msg: '恭喜您，登录成功了！',
+                fontSize: 18.0,
+                timeInSecForIosWeb: 3,
+                backgroundColor: Colors.green,
+            );
+      }else{
+          Fluttertoast.showToast(
+                msg: '用户名或密码错误！',
+                fontSize: 18.0,
+                timeInSecForIosWeb: 3,
+                backgroundColor: Colors.red[400],
+            );
+      }
+
 }
 // 表单
   Widget formChild(){
@@ -82,7 +104,7 @@ Future <void> submitLogin(){
           Column(
             children:<Widget>[
                   TextField(
-                      autofocus:true,
+                      autofocus:false,//默认不聚焦
                       controller: _controllerName,
                       style:const TextStyle(fontSize: 18.0),
                       decoration:const InputDecoration(

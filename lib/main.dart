@@ -1,17 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_2022_04_29/pages/home/mine_page.dart';
-// import './pages/login/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+import './pages/login/login.dart';
 import 'pages/home/main_page.dart';
 
 
-void main() {
+void main() async{
   runApp(const MyApp());
 }
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String token='false';
+  
+  getToken() async {
+    // 本地token
+    final prefs =await SharedPreferences.getInstance();
+    token= prefs.getString('token')==null? 'false' : prefs.getString('token').toString();
+    
+    debugPrint('首页获取的token:$token');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,13 +49,16 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch:Colors.amber,
       ),
-      // home:const LoginPage(title: '登录',)
-      home: MainPage()
-            // 
+      initialRoute:token=='true'? '/main':'/login',
+      routes: {
+        '/login':(context) =>const LoginPage(title: '登录'),
+        '/main':(context) => const MainPage()
+      },
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);

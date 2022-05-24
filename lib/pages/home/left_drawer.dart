@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 class LeftDrawerPage extends StatelessWidget {
   const LeftDrawerPage({Key? key}) : super(key: key);
-
+  void outLogin(context) async{
+    debugPrint('退出登录');
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', 'false');
+      Fluttertoast.showToast(
+        msg: '你已退出！',
+        fontSize: 18.0,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.green,
+      );
+      Navigator.pushReplacementNamed(context,'/login');
+  }
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -32,6 +47,10 @@ class LeftDrawerPage extends StatelessWidget {
             leading: Icon(Icons.person),
             title: new Text('个人'),
             subtitle: new Text('个人详情'),
+          ),
+          ElevatedButton(
+            child:const Text('退出登录'),
+            onPressed: ()=>outLogin(context),
           )
         ],
       ),
