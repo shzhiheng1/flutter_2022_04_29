@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 
 import './pages/login/login.dart';
@@ -22,7 +24,9 @@ class _MyAppState extends State<MyApp> {
   getToken() async {
     // 本地token
     final prefs =await SharedPreferences.getInstance();
-    token= prefs.getString('token')==null? 'false' : prefs.getString('token').toString();
+    setState(() {
+       token= prefs.getString('token')==null? 'false' : prefs.getString('token').toString();
+    });
     
     debugPrint('首页获取的token:$token');
   }
@@ -35,27 +39,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch:Colors.amber,
-      ),
-      initialRoute:token=='true'? '/main':'/login',
-      routes: {
-        '/login':(context) =>const LoginPage(title: '登录'),
-        '/main':(context) => const MainPage()
-      },
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+     return ScreenUtilInit(
+      designSize: const Size(750, 1334),
+      minTextAdapt: false,
+      splitScreenMode: false,
+      builder: (context , child) {
+       return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            // This is the theme of your application.
+            //
+            // Try running your application with "flutter run". You'll see the
+            // application has a blue toolbar. Then, without quitting the app, try
+            // changing the primarySwatch below to Colors.green and then invoke
+            // "hot reload" (press "r" in the console where you ran "flutter run",
+            // or simply save your changes to "hot reload" in a Flutter IDE).
+            // Notice that the counter didn't reset back to zero; the application
+            // is not restarted.
+            primarySwatch:Colors.amber,
+            textTheme: TextTheme(bodyText2: TextStyle(fontSize: 30.sp)),
+            // textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+          ),
+          initialRoute:token=='true'? '/main':'/login',
+          routes: {
+            '/login':(context) =>const LoginPage(title: '登录'),
+            '/main':(context) => const MainPage()
+          },
+          // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        );
+       }
+     );
   }
 }
 
